@@ -5,7 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,6 +34,20 @@ public class User {
   @Size(max = 120)
   private String password;
 
+  private boolean emailVerified;
+
+  private int usedCredits;
+  private int availableCredits;
+
+  public User(String username, String password, String email) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    this.emailVerified = false;
+    this.availableCredits = 0;
+  }
+
+
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "user_roles", 
              joinColumns = @JoinColumn(name = "user_id"),
@@ -39,12 +55,6 @@ public class User {
   private Set<Role> roles = new HashSet<>();
 
   public User() {
-  }
-
-  public User(String username, String email, String password) {
-    this.username = username;
-    this.email = email;
-    this.password = password;
   }
 
   public Long getId() {
@@ -85,5 +95,50 @@ public class User {
 
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
+  }
+
+  public boolean isEmailVerified() {
+    return emailVerified;
+  }
+
+  public void setEmailVerified(boolean emailVerified) {
+    this.emailVerified = emailVerified;
+  }
+
+  public int getUsedCredits() {
+    return usedCredits;
+  }
+
+  public void setUsedCredits(int usedCredits) {
+    this.usedCredits = usedCredits;
+  }
+
+
+  public int getAvailableCredits() {
+    return availableCredits;
+  }
+
+/*  public List<Package> getPurchasedPackages() {
+    // Implement logic to retrieve purchased packages for the user from a data store (e.g., a database).
+    // Return the list of purchased packages.
+    return fetchPurchasedPackagesFromDataStore();
+  }*/
+
+/*  private List<Package> fetchPurchasedPackagesFromDataStore() {
+    // Implement database or data store access to fetch the user's purchased packages.
+    // Return the list of purchased packages.
+    // Example: You might query a database based on the user's ID or username.
+    return yourDatabaseQueryResult;
+  }*/
+
+  public void addCredits(int creditsToAdd) {
+    availableCredits += creditsToAdd;
+  }
+
+  public void deductCredits(int creditsToDeduct) {
+    availableCredits -= creditsToDeduct;
+  }
+
+  public void addPurchasedPackage(Package packageToPurchase) {
   }
 }

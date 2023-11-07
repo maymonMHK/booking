@@ -4,6 +4,8 @@ import com.mhk.booking.security.jwt.AuthEntryPointJwt;
 import com.mhk.booking.security.jwt.AuthTokenFilter;
 import com.mhk.booking.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.RegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,7 +68,10 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/test/**").permitAll()
-                                .anyRequest().authenticated()
+                                .requestMatchers("/api/auth/signin").permitAll()
+                                .requestMatchers(AUTH_WHITELIST).permitAll()
+                               // .anyRequest().authenticated()
+
                 );
 
         http.authenticationProvider(authenticationProvider());
@@ -75,4 +80,25 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
         return http.build();
     }
+
+    private static final String[] AUTH_WHITELIST = {
+            "/api/auth/signin",
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+
+    };
+/*    @Bean
+    public RegistrationBean jwtAuthFilterRegister(JwtAuthenticationFilter filter) {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean(filter);
+        registrationBean.setEnabled(false);
+        return registrationBean;
+    }*/
+
 }
